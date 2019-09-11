@@ -1,6 +1,7 @@
 const express = require("express");
 
-const db = require("../data/db-config.js");
+const db = require("../data/db-config.js"); // you can refactor all this and eventually delete it!
+const Users = require("./user-model"); // and just use this!
 
 const router = express.Router();
 
@@ -85,13 +86,13 @@ router.delete("/:id", (req, res) => {
 
 router.get("/:id/posts", (req, res) => {
   const { id } = req.params;
-  db("posts as p")
-    .join("users as u", "u.id", "p.user_id")
-    .where({ user_id: id })
+
+  Users.findUserPosts(id)
     .then(posts => {
       res.status(200).json(posts);
     })
     .catch(error => res.send(error));
+  // this is re done from user-model importing into here and creating fx in there
 });
 
 module.exports = router;
